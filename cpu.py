@@ -6,6 +6,7 @@ IS = 6
 SP = 7
 
 # op codes
+HLT = 0b00000001
 LDI = 0b10000010
 CMP = 0b10100111
 JMP = 0b01010100
@@ -25,6 +26,7 @@ class CPU:
         self.register = [0] * 8
         self.flag = [0] * 8
         self.branchtable = {
+            HLT: self.op_HLT,
             LDI: self.op_LDI,
             CMP: self.op_CMP,
             JMP: self.op_JMP,
@@ -53,7 +55,14 @@ class CPU:
         self.register[SP] = 0
         # run commands along the program count
         while True:
-            break
+            instruction = self.ram_read(self.pc)
+            if instruction in self.branchtable:
+                self.branchtable[instruction]()
+            else:
+                sys.exit(1)
+
+    def op_HLT(self):
+        sys.exit(0)
 
     def op_LDI(self):
         '''Loads a the next value into the indicated register.'''
