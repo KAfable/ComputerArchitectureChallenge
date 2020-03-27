@@ -46,29 +46,34 @@ class CPU:
         '''Compares the values in two given registers and adjusts equality flags accordingly.'''
         reg_a = self.ram_read(self.pc + 1)
         value_a = self.register[reg_a]
+
         reg_b = self.ram_read(self.pc + 2)
         value_b = self.register[reg_b]
-        # A < B L
         if value_a < value_b:
             self.flag[FL_L] = 1
             self.flag[FL_G] = 0
             self.flag[FL_E] = 0
-        # A > B G
         elif value_a > value_b:
             self.flag[FL_L] = 0
             self.flag[FL_G] = 1
             self.flag[FL_E] = 0
-        # A == B E
         else:
             self.flag[FL_L] = 0
             self.flag[FL_G] = 0
             self.flag[FL_E] = 1
 
     def op_JMP(self):
-        pass
+        '''Jumps to the register given'''
+        self.pc += 1
+        reg = self.ram_read(self.pc)
+        self.pc = self.register[reg]
 
     def op_JEQ(self):
-        pass
+        '''Jumps to the register given if equal flag is true.'''
+        if self.flag[FL_E]:
+            self.op_JMP()
+        else:
+            self.pc += 2
 
     def op_JNE(self):
         pass
