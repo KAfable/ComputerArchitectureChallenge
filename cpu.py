@@ -76,7 +76,10 @@ class CPU:
             self.pc += 2
 
     def op_JNE(self):
-        pass
+        if not self.flag[FL_E]:
+            self.op_JMP()
+        else:
+            self.pc += 2
 
     def ram_read(self, mar):
         return self.ram[mar]
