@@ -3,7 +3,7 @@ from cpu import CPU
 
 cpu = CPU()
 
-if len(sys.argv) != 2:
+if len(sys.argv) == 2:
     filename = sys.argv[1]
 else:
     print("Please make sure you entered a valid filepath.")
