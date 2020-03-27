@@ -8,6 +8,7 @@ SP = 7
 # op codes
 HLT = 0b00000001
 LDI = 0b10000010
+PRN = 0b01000111
 CMP = 0b10100111
 JMP = 0b01010100
 JEQ = 0b01010101
@@ -28,6 +29,7 @@ class CPU:
         self.branchtable = {
             HLT: self.op_HLT,
             LDI: self.op_LDI,
+            PRN: self.op_PRN,
             CMP: self.op_CMP,
             JMP: self.op_JMP,
             JEQ: self.op_JEQ,
@@ -46,6 +48,7 @@ class CPU:
                         op_code = int(f"0b{instruction}", 2)
                         self.ram_write(mar, op_code)
                         mar += 1
+            # print(self.ram)
         except FileNotFoundError:
             print("File not found, please verify you entered a correct filepath.")
             sys.exit(1)
@@ -53,12 +56,14 @@ class CPU:
     def run(self):
         # reset program count
         self.register[SP] = 0
+        self.pc = 0
         # run commands along the program count
         while True:
             instruction = self.ram_read(self.pc)
             if instruction in self.branchtable:
                 self.branchtable[instruction]()
             else:
+                print(f"Error: Op code not found")
                 sys.exit(1)
 
     def op_HLT(self):
@@ -69,10 +74,12 @@ class CPU:
         reg = self.ram_read(self.pc + 1)
         value = self.ram_read(self.pc + 2)
         self.register[reg] = value
+        self.pc += 3
 
     def op_PRN(self):
         '''Prints the next value.'''
-        value = self.ram_read(self.pc + 1)
+        reg = self.ram_read(self.pc + 1)
+        value = self.register[reg]
         print(value)
         self.pc += 2
 
@@ -83,6 +90,7 @@ class CPU:
 
         reg_b = self.ram_read(self.pc + 2)
         value_b = self.register[reg_b]
+
         if value_a < value_b:
             self.flag[FL_L] = 1
             self.flag[FL_G] = 0
@@ -96,6 +104,8 @@ class CPU:
             self.flag[FL_G] = 0
             self.flag[FL_E] = 1
 
+        self.pc += 3
+
     def op_JMP(self):
         '''Jumps to the register given'''
         self.pc += 1
@@ -107,6 +117,7 @@ class CPU:
         if self.flag[FL_E]:
             self.op_JMP()
         else:
+            print(f'not equal')
             self.pc += 2
 
     def op_JNE(self):
