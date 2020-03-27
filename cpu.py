@@ -30,7 +30,10 @@ class CPU:
         }
 
     def op_LDI(self):
-        pass
+        '''Loads a the next value into the indicated register.'''
+        reg = self.ram_read(self.pc + 1)
+        value = self.ram_read(self.pc + 2)
+        self.register[reg] = value
 
     def op_PRN(self):
         pass
@@ -46,3 +49,10 @@ class CPU:
 
     def op_JNE(self):
         pass
+
+    def ram_read(self, mar):
+        return self.ram[mar]
+
+    def ram_write(self, mar, mdr):
+        # mdr is normally a pointer to the register that stores the value, here it's the value itself
+        self.ram[mar] = mdr
