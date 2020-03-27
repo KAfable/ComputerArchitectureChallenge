@@ -1,3 +1,5 @@
+import sys
+
 # register indexes
 IM = 5
 IS = 6
@@ -31,12 +33,20 @@ class CPU:
         }
 
     def load(self, filename):
-        # try to load the file
-        # strip out any whitespace
-        # ignore blanklines
-        # load into memory
-        #
-        pass
+        try:
+            with open(filename) as program:
+                mar = 0
+                for line in program:
+                    instruction = line.split('#')[0].strip()
+                    if instruction == '':
+                        continue
+                    else:
+                        op_code = int(f"0b{instruction}", 2)
+                        self.ram_write(mar, op_code)
+                        mar += 1
+        except FileNotFoundError:
+            print("File not found, please verify you entered a correct filepath.")
+            sys.exit(1)
 
     def run(self):
         # reset program count
