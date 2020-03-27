@@ -21,6 +21,7 @@ class CPU:
         self.pc = 0
         self.ram = [0] * 256
         self.register = [0] * 8
+        self.flag = [0] * 8
         self.branchtable = {
             LDI: self.op_LDI,
             CMP: self.op_CMP,
@@ -36,10 +37,32 @@ class CPU:
         self.register[reg] = value
 
     def op_PRN(self):
-        pass
+        '''Prints the next value.'''
+        value = self.ram_read(self.pc + 1)
+        print(value)
+        self.pc += 2
 
     def op_CMP(self):
-        pass
+        '''Compares the values in two given registers and adjusts equality flags accordingly.'''
+        reg_a = self.ram_read(self.pc + 1)
+        value_a = self.register[reg_a]
+        reg_b = self.ram_read(self.pc + 2)
+        value_b = self.register[reg_b]
+        # A < B L
+        if value_a < value_b:
+            self.flag[FL_L] = 1
+            self.flag[FL_G] = 0
+            self.flag[FL_E] = 0
+        # A > B G
+        elif value_a > value_b:
+            self.flag[FL_L] = 0
+            self.flag[FL_G] = 1
+            self.flag[FL_E] = 0
+        # A == B E
+        else:
+            self.flag[FL_L] = 0
+            self.flag[FL_G] = 0
+            self.flag[FL_E] = 1
 
     def op_JMP(self):
         pass
