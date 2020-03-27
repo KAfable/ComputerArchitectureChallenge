@@ -30,6 +30,21 @@ class CPU:
             JNE: self.op_JNE
         }
 
+    def load(self, filename):
+        # try to load the file
+        # strip out any whitespace
+        # ignore blanklines
+        # load into memory
+        #
+        pass
+
+    def run(self):
+        # reset program count
+        self.register[SP] = 0
+        # run commands along the program count
+        while True:
+            break
+
     def op_LDI(self):
         '''Loads a the next value into the indicated register.'''
         reg = self.ram_read(self.pc + 1)
